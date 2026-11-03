@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "regions": ["bom1"],
+  "functions": {
+    "api/proxy.py": {
+      "maxDuration": 300,
+      "memory": 512
+    }
+  },
+  "routes": [
+    { "src": "/(.*)", "dest": "/api/proxy.py" }
+  ]
+}
