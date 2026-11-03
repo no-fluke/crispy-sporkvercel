@@ -16,6 +16,7 @@ ALLOWED_DOMAINS = [
     "appxcontent.kaxa.in",
     "appx-content.classx.co.in",
     "appxcontentcdn.classx.co.in",
+    "transcoded-videos.classx.co.in",
 ]
 
 def make_ssl_ctx():
@@ -55,6 +56,9 @@ class handler(BaseHTTPRequestHandler):
         if not target_url:
             self._error(400, "Missing ?url= parameter")
             return
+
+        # Decode percent-encoding if client encoded the URL
+        target_url = urllib.parse.unquote(target_url)
 
         target_parsed = urllib.parse.urlparse(target_url)
         if not any(d in target_parsed.netloc for d in ALLOWED_DOMAINS):
@@ -111,6 +115,9 @@ class handler(BaseHTTPRequestHandler):
         if not target_url:
             self._error(400, "Missing ?url=")
             return
+
+        # Decode percent-encoding if client encoded the URL
+        target_url = urllib.parse.unquote(target_url)
 
         target_parsed = urllib.parse.urlparse(target_url)
         if not any(d in target_parsed.netloc for d in ALLOWED_DOMAINS):
