@@ -42,10 +42,16 @@ def build_headers(target_url, range_val=None):
 class handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
-        parsed = urllib.parse.urlparse(self.path)
-        params = urllib.parse.parse_qs(parsed.query)
+        # Extract everything after ?url= as the raw target URL
+        # This preserves & and ? inside the target URL without requiring pre-encoding
+        raw_path = self.path
+        marker = "?url="
+        idx = raw_path.find(marker)
+        if idx == -1:
+            self._error(400, "Missing ?url= parameter")
+            return
+        target_url = raw_path[idx + len(marker):]
 
-        target_url = params.get("url", [None])[0]
         if not target_url:
             self._error(400, "Missing ?url= parameter")
             return
@@ -94,9 +100,13 @@ class handler(BaseHTTPRequestHandler):
             self._error(502, f"Proxy error: {str(e)}")
 
     def do_HEAD(self):
-        parsed = urllib.parse.urlparse(self.path)
-        params = urllib.parse.parse_qs(parsed.query)
-        target_url = params.get("url", [None])[0]
+        raw_path = self.path
+        marker = "?url="
+        idx = raw_path.find(marker)
+        if idx == -1:
+            self._error(400, "Missing ?url=")
+            return
+        target_url = raw_path[idx + len(marker):]
 
         if not target_url:
             self._error(400, "Missing ?url=")
