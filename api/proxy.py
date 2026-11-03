@@ -57,8 +57,8 @@ class handler(BaseHTTPRequestHandler):
 
         ctx = make_ssl_ctx()
 
-        # Pass through client Range header if present, else no Range
-        range_val = self.headers.get("Range")
+        # Pass through client Range header, default to bytes=0- (required by CDN)
+        range_val = self.headers.get("Range") or "bytes=0-"
         req_headers = build_headers(target_url, range_val)
 
         try:
