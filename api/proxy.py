@@ -17,6 +17,7 @@ ALLOWED_DOMAINS = [
     "appx-content.classx.co.in",
     "appxcontentcdn.classx.co.in",
     "transcoded-videos.classx.co.in",
+    "static-mgv.appx.co.in",
 ]
 
 def make_ssl_ctx():
